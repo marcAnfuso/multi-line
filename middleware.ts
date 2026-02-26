@@ -12,7 +12,7 @@ async function sha256(text: string): Promise<string> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith('/admin') || pathname.startsWith('/api/lines') || pathname.startsWith('/api/init')) {
+  if (pathname.startsWith('/admin') || pathname.startsWith('/api/lines')) {
     const session = request.cookies.get('multilinea_session');
     const password = process.env.ADMIN_PASSWORD || '';
     const expectedToken = await sha256(password);
@@ -29,5 +29,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/lines/:path*', '/api/init/:path*'],
+  matcher: ['/admin/:path*', '/api/lines/:path*'],
 };
