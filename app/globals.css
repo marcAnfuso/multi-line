@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+body {
+  background-color: #020617;
+  color: #f1f5f9;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+::selection {
+  background-color: rgba(99, 102, 241, 0.3);
+}
+
+input::placeholder {
+  color: #475569;
+}

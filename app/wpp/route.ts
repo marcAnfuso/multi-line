@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getActiveLines } from '@/lib/db';
+import { getActiveLines, incrementClicks } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,6 +15,10 @@ export async function GET() {
     }
 
     const line = lines[Math.floor(Math.random() * lines.length)];
+
+    // Increment click counter (fire and forget, don't block redirect)
+    incrementClicks(line.id).catch(() => {});
+
     const encodedMessage = encodeURIComponent(line.message);
     const whatsappUrl = `https://wa.me/${line.phone}${line.message ? `?text=${encodedMessage}` : ''}`;
 

@@ -13,13 +13,13 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { phone, message } = await request.json();
+    const { name, phone, message } = await request.json();
 
     if (!phone) {
       return NextResponse.json({ error: 'Phone is required' }, { status: 400 });
     }
 
-    const line = await createLine(phone, message || '');
+    const line = await createLine(name || '', phone, message || '');
     return NextResponse.json(line, { status: 201 });
   } catch (error) {
     console.error('[Lines API] Error creating line:', error);
