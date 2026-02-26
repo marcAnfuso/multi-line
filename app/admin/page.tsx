@@ -260,43 +260,41 @@ export default function AdminPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     {/* Toggle */}
                     <button
                       onClick={() => handleToggle(line)}
-                      className={`w-11 h-6 rounded-full relative transition-colors duration-200 shrink-0 cursor-pointer ${
+                      className={`w-10 h-[22px] rounded-full relative transition-colors duration-200 shrink-0 cursor-pointer ${
                         line.active ? 'bg-emerald-500' : 'bg-slate-600'
                       }`}
                     >
                       <span
-                        className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
-                          line.active ? 'translate-x-5.5' : 'translate-x-0.5'
+                        className={`absolute top-[3px] left-[3px] w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+                          line.active ? 'translate-x-[18px]' : 'translate-x-0'
                         }`}
                       />
                     </button>
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <p className={`text-sm font-medium ${line.active ? 'text-slate-100' : 'text-slate-500'}`}>
                           {line.name || line.phone}
                         </p>
                         {line.name && (
                           <span className="text-xs font-mono text-slate-500">{line.phone}</span>
                         )}
-                      </div>
-                      <div className="flex items-center gap-3 mt-0.5">
-                        <p className="text-xs text-slate-500 truncate">
-                          {line.message || '(sin mensaje)'}
-                        </p>
                         <span
-                          className="text-xs text-violet-400/70 cursor-pointer hover:text-violet-300 transition-colors"
+                          className="text-xs text-violet-400/60 cursor-pointer hover:text-violet-300 transition-colors"
                           onClick={() => handleResetClicks(line.id)}
                           title="Click para resetear"
                         >
                           {line.clicks || 0} clicks
                         </span>
                       </div>
+                      <p className="text-xs text-slate-500 truncate mt-0.5">
+                        {line.message || '(sin mensaje)'}
+                      </p>
                     </div>
 
                     {/* Actions */}
