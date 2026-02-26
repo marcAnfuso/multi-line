@@ -14,14 +14,30 @@ function getSQL() {
   return neon(process.env.DATABASE_URL!);
 }
 
-// Auto-migration: runs once per cold start, adds new columns if missing
+// Auto-migration: creates table if missing, adds new columns if missing
 let migrated = false;
 async function ensureSchema() {
   if (migrated) return;
-  const sql = getSQL();
-  await sql`ALTER TABLE lines ADD COLUMN IF NOT EXISTS name VARCHAR(100) NOT NULL DEFAULT ''`;
-  await sql`ALTER TABLE lines ADD COLUMN IF NOT EXISTS clicks INTEGER NOT NULL DEFAULT 0`;
-  migrated = true;
+  try {
+    const sql = getSQL();
+    await sql`
+      CREATE TABLE IF NOT EXISTS lines (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL DEFAULT '',
+        phone VARCHAR(20) NOT NULL,
+        message TEXT NOT NULL DEFAULT '',
+        active BOOLEAN NOT NULL DEFAULT true,
+        clicks INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `;
+    await sql`ALTER TABLE lines ADD COLUMN IF NOT EXISTS name VARCHAR(100) NOT NULL DEFAULT ''`;
+    await sql`ALTER TABLE lines ADD COLUMN IF NOT EXISTS clicks INTEGER NOT NULL DEFAULT 0`;
+    migrated = true;
+  } catch (err) {
+    console.error('[DB Migration] Error:', err);
+    migrated = true;
+  }
 }
 
 export async function getLines(): Promise<Line[]> {
