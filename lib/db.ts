@@ -18,26 +18,28 @@ function getSQL() {
 let migrated = false;
 async function ensureSchema() {
   if (migrated) return;
+  const sql = getSQL();
+  console.log('[DB Migration] Running ensureSchema...');
+  await sql`
+    CREATE TABLE IF NOT EXISTS lines (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL DEFAULT '',
+      phone VARCHAR(20) NOT NULL,
+      message TEXT NOT NULL DEFAULT '',
+      active BOOLEAN NOT NULL DEFAULT true,
+      clicks INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    )
+  `;
+  console.log('[DB Migration] Table ensured, adding columns...');
   try {
-    const sql = getSQL();
-    await sql`
-      CREATE TABLE IF NOT EXISTS lines (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL DEFAULT '',
-        phone VARCHAR(20) NOT NULL,
-        message TEXT NOT NULL DEFAULT '',
-        active BOOLEAN NOT NULL DEFAULT true,
-        clicks INTEGER NOT NULL DEFAULT 0,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-      )
-    `;
     await sql`ALTER TABLE lines ADD COLUMN IF NOT EXISTS name VARCHAR(100) NOT NULL DEFAULT ''`;
     await sql`ALTER TABLE lines ADD COLUMN IF NOT EXISTS clicks INTEGER NOT NULL DEFAULT 0`;
-    migrated = true;
   } catch (err) {
-    console.error('[DB Migration] Error:', err);
-    migrated = true;
+    console.log('[DB Migration] Column migration note:', err);
   }
+  migrated = true;
+  console.log('[DB Migration] Done');
 }
 
 export async function getLines(): Promise<Line[]> {
